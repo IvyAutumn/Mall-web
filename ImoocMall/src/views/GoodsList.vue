@@ -10,16 +10,16 @@
           <span class="sortby">Sort by:</span>
           <a href="javascript:void(0)" class="default cur">Default</a>
           <a href="javascript:void(0)" class="price">Price <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
-          <a href="javascript:void(0)" class="filterby stopPop">Filter by</a>
+          <a href="javascript:void(0)" class="filterby stopPop"  @click="showfilterPop">Filter by</a>
         </div>
         <div class="accessory-result">
           <!-- filter -->
-          <div class="filter stopPop" id="filter">
+          <div class="filter stopPop" id="filter" v-bind:class="{'filterby-show':filterBy}">
             <dl class="filter-price">
               <dt>Price:</dt>
               <dd><a href="javascript:void(0)" v-bind:class="{'cur':priceChecked=='all'}" @click="priceChecked='all'">All</a></dd>
-              <dd v-for="(price,index) of pirceFilter" @click="setPriceFilter">
-                <a href="javascript:void(0)" @click="priceChecked=index" v-bind:class="{'cur':priceChecked==index}">{{price.startPrice}} - {{price.endPrice}}</a>
+              <dd v-for="(price,index) of pirceFilter" @click="priceChecked=index">
+                <a href="javascript:void(0)" @click="setPriceFilter(index)" v-bind:class="{'cur':priceChecked==index}">{{price.startPrice}} - {{price.endPrice}}</a>
               </dd>
             </dl>
           </div>
@@ -30,7 +30,7 @@
               <ul>
                 <li v-for="item of goodsList" :key="item.productId">
                   <div class="pic">
-                    <a href="#"><img v-bind:src="'/static/'+item.prodcutImg" alt=""></a>
+                    <a href="#"><img v-lazy="'/static/'+item.prodcutImg" alt=""></a>
                   </div>
                   <div class="main">
                     <div class="name">{{item.productName}}</div>
@@ -46,6 +46,7 @@
         </div>
       </div>
     </div>
+    <div class="md-overlay" v-show="overLayFlag" @click="closePop"></div>
     <nav-footer></nav-footer>
   </div>
 </template>
@@ -78,7 +79,9 @@ export default {
           endPrice: '2000.00'
         }
       ],
-      priceChecked: 'all'
+      priceChecked: 'all',
+      filterBy:false,
+      overLayFlag: false
     }
   },
   components: {
@@ -95,6 +98,18 @@ export default {
         var res = result.data;
         this.goodsList = res.result;
       })
+    },
+    showfilterPop(){
+      this.filterBy = true;
+      this.overLayFlag = true;
+    },
+    closePop(){
+      this.filterBy = false;
+      this.overLayFlag = false;
+    },
+    setPriceFilter(index){
+      this.priceChecked=index;
+      this.closePop();
     }
   }
 }
