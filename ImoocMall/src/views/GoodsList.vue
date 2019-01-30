@@ -17,9 +17,9 @@
           <div class="filter stopPop" id="filter">
             <dl class="filter-price">
               <dt>Price:</dt>
-              <dd><a href="javascript:void(0)">All</a></dd>
-              <dd>
-                <a href="javascript:void(0)">0 - 100</a>
+              <dd><a href="javascript:void(0)" v-bind:class="{'cur':priceChecked=='all'}" @click="priceChecked='all'">All</a></dd>
+              <dd v-for="(price,index) of pirceFilter" @click="setPriceFilter">
+                <a href="javascript:void(0)" @click="priceChecked=index" v-bind:class="{'cur':priceChecked==index}">{{price.startPrice}} - {{price.endPrice}}</a>
               </dd>
             </dl>
           </div>
@@ -63,7 +63,22 @@ export default {
   name: 'GoodsList',
   data () {
     return {
-      goodsList: []
+      goodsList: [],
+      pirceFilter: [
+        {
+          startPrice: '0.00',
+          endPrice: '500.00'
+        },
+        {
+          startPrice: '500.00',
+          endPrice: '1000.00'
+        },
+        {
+          startPrice: '1000.00',
+          endPrice: '2000.00'
+        }
+      ],
+      priceChecked: 'all'
     }
   },
   components: {
