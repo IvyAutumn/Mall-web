@@ -30,7 +30,7 @@
               <ul>
                 <li v-for="item of goodsList" :key="item.productId">
                   <div class="pic">
-                    <a href="#"><img v-lazy="'/static/'+item.prodcutImg" alt=""></a>
+                    <a href="#"><img v-lazy="'/static/'+item.productImage" alt=""></a>
                   </div>
                   <div class="main">
                     <div class="name">{{item.productName}}</div>
@@ -94,9 +94,9 @@ export default {
   },
   methods:{
     getGoodsList() {
-      axios.get("/goods/list").then((result)=>{
+      axios.get("/goods").then((result)=>{
         var res = result.data;
-        this.goodsList = res.result;
+        this.goodsList = res.result.list;
       })
     },
     showfilterPop(){
