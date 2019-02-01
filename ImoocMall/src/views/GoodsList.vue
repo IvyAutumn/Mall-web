@@ -18,7 +18,7 @@
             <dl class="filter-price">
               <dt>Price:</dt>
               <dd><a href="javascript:void(0)" v-bind:class="{'cur':priceChecked=='all'}" @click="priceChecked='all'">All</a></dd>
-              <dd v-for="(price,index) of pirceFilter" @click="priceChecked=index">
+              <dd v-for="(price,index) of priceFilter" @click="priceChecked=index">
                 <a href="javascript:void(0)" @click="setPriceFilter(index)" v-bind:class="{'cur':priceChecked==index}">{{price.startPrice}} - {{price.endPrice}}</a>
               </dd>
             </dl>
@@ -45,7 +45,7 @@
                    v-infinite-scroll="loadMore"
                    infinite-scroll-disabled="busy"
                    infinite-scroll-distance="20">
-                   加载中...
+                   <img src="./../assets/loading-spinning-bubbles.svg" v-show="loading">
               </div>
             </div>
           </div>
@@ -75,18 +75,22 @@ export default {
       pageSize:8,
       sortFlag: true,
       busy:true,
-      pirceFilter: [
+      priceFilter:[
         {
-          startPrice: '0.00',
-          endPrice: '500.00'
+            startPrice:'0.00',
+            endPrice:'100.00'
         },
         {
-          startPrice: '500.00',
-          endPrice: '1000.00'
+          startPrice:'100.00',
+          endPrice:'500.00'
         },
         {
-          startPrice: '1000.00',
-          endPrice: '2000.00'
+          startPrice:'500.00',
+          endPrice:'1000.00'
+        },
+        {
+          startPrice:'1000.00',
+          endPrice:'5000.00'
         }
       ],
       priceChecked: 'all',
@@ -107,12 +111,15 @@ export default {
       var param = {
           page:this.page,
           pageSize:this.pageSize,
-          sort:this.sortFlag?1:-1
+          sort:this.sortFlag?1:-1,
+          priceLevel:this.priceChecked
       };
+      this.loading = true;
       axios.get("/goods",{
         params:param
       }).then((result)=>{
         var res = result.data;
+        this.loading = false;
         if(res.status=="0"){
           if(flag){
               this.goodsList = this.goodsList.concat(res.result.list);
@@ -140,8 +147,10 @@ export default {
       this.overLayFlag = false;
     },
     setPriceFilter(index){
-      this.priceChecked=index;
+      this.priceChecked = index;
       this.closePop();
+      this.page = 1;
+      this.getGoodsList();
     },
     sortGoods(){
         this.sortFlag = !this.sortFlag;
