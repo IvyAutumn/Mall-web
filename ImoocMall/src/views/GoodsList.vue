@@ -36,7 +36,7 @@
                     <div class="name">{{item.productName}}</div>
                     <div class="price">{{item.salePrice}}</div>
                     <div class="btn-area">
-                      <a href="javascript:;" class="btn btn--m">加入购物车</a>
+                      <a href="javascript:;" class="btn btn--m" @click="addCart(item.productId)">加入购物车</a>
                     </div>
                   </div>
                 </li>
@@ -75,6 +75,7 @@ export default {
       pageSize:8,
       sortFlag: true,
       busy:true,
+      loading:false,
       priceFilter:[
         {
             startPrice:'0.00',
@@ -155,7 +156,7 @@ export default {
     sortGoods(){
         this.sortFlag = !this.sortFlag;
         this.page = 1;
-        this.getGoodsList(true);
+        this.getGoodsList();
     },
     loadMore(){
         this.busy = true;
@@ -163,6 +164,19 @@ export default {
           this.page++;
           this.getGoodsList(true);
         }, 500);
+    },
+    addCart(productId){
+        axios.post("/goods/addCart",{
+          productId:productId
+        }).then((res)=>{
+            var res = res.data;
+            if(res.status==0){
+                this.mdShowCart = true;
+                this.$store.commit("updateCartCount",1);
+            }else{
+                this.mdShow = true;
+            }
+        });
     },
   }
 }
