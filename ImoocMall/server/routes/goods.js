@@ -20,13 +20,13 @@ mongoose.connection.on("disconnected", function () {
 
 //查询商品列表数据
 router.get("/", function (req,res,next) {
-  // let page = parseInt(req.param("page"));
-  // let pageSize = parseInt(req.param("pageSize"));
-  // let priceLevel = req.param("priceLevel");
-  // let sort = req.param("sort");
-  // let skip = (page-1)*pageSize;
+  let page = parseInt(req.param("page"));
+  let pageSize = parseInt(req.param("pageSize"));
+  let priceLevel = req.param("priceLevel");
+  let sort = req.param("sort");
+  let skip = (page-1)*pageSize;
   // var priceGt = '',priceLte = '';
-  // let params = {};
+  let params = {};
   // if(priceLevel!='all'){
   //   switch (priceLevel){
   //     case '0':priceGt = 0;priceLte=100;break;
@@ -41,9 +41,9 @@ router.get("/", function (req,res,next) {
   //     }
   //   }
   // }
-  // let goodsModel = Goods.find(params).skip(skip).limit(pageSize);
-  // goodsModel.sort({'salePrice':sort});
-  Goods.find({}, function (err,doc) {
+  let goodsModel = Goods.find(params).skip(skip).limit(pageSize);
+  goodsModel.sort({'salePrice':sort});
+  goodsModel.exec(function (err,doc) {
       if(err){
           res.json({
             status:'1',

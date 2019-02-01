@@ -9,7 +9,7 @@
         <div class="filter-nav">
           <span class="sortby">Sort by:</span>
           <a href="javascript:void(0)" class="default cur">Default</a>
-          <a href="javascript:void(0)" class="price">Price <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
+          <a href="javascript:void(0)" class="price" @click="sortGoods">Price <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
           <a href="javascript:void(0)" class="filterby stopPop"  @click="showfilterPop">Filter by</a>
         </div>
         <div class="accessory-result">
@@ -34,13 +34,19 @@
                   </div>
                   <div class="main">
                     <div class="name">{{item.productName}}</div>
-                    <div class="price">{{item.prodcutPrice}}</div>
+                    <div class="price">{{item.salePrice}}</div>
                     <div class="btn-area">
                       <a href="javascript:;" class="btn btn--m">加入购物车</a>
                     </div>
                   </div>
                 </li>
               </ul>
+              <div class="view-more-normal"
+                   v-infinite-scroll="loadMore"
+                   infinite-scroll-disabled="busy"
+                   infinite-scroll-distance="20">
+                   加载中...
+              </div>
             </div>
           </div>
         </div>
@@ -65,6 +71,10 @@ export default {
   data () {
     return {
       goodsList: [],
+      page:1,
+      pageSize:8,
+      sortFlag: true,
+      busy:true,
       pirceFilter: [
         {
           startPrice: '0.00',
@@ -93,10 +103,32 @@ export default {
     this.getGoodsList()
   },
   methods:{
-    getGoodsList() {
-      axios.get("/goods").then((result)=>{
+    getGoodsList(flag) {
+      var param = {
+          page:this.page,
+          pageSize:this.pageSize,
+          sort:this.sortFlag?1:-1
+      };
+      axios.get("/goods",{
+        params:param
+      }).then((result)=>{
         var res = result.data;
-        this.goodsList = res.result.list;
+        if(res.status=="0"){
+          if(flag){
+              this.goodsList = this.goodsList.concat(res.result.list);
+
+              if(res.result.count==0){
+                  this.busy = true;
+              }else{
+                  this.busy = false;
+              }
+          }else{
+              this.goodsList = res.result.list;
+              this.busy = false;
+          }
+        }else{
+          this.goodsList = [];
+        }
       })
     },
     showfilterPop(){
@@ -110,7 +142,19 @@ export default {
     setPriceFilter(index){
       this.priceChecked=index;
       this.closePop();
-    }
+    },
+    sortGoods(){
+        this.sortFlag = !this.sortFlag;
+        this.page = 1;
+        this.getGoodsList(true);
+    },
+    loadMore(){
+        this.busy = true;
+        setTimeout(() => {
+          this.page++;
+          this.getGoodsList(true);
+        }, 500);
+    },
   }
 }
 </script>
