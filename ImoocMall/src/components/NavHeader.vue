@@ -88,7 +88,21 @@
               nickName:''
             }
         },
+        mounted(){
+            this.checkLogin();
+        },
         methods:{
+	        checkLogin(){
+	            axios.get("/users/checkLogin").then((response)=>{
+	                let res = response.data;
+	                // var path = this.$route.pathname;
+	                if(res.status=="0"){
+	                     this.nickName = res.result;
+	                  // this.$store.commit("updateUserInfo",res.result);
+	                  // this.loginModalFlag = false;
+	                }
+	            });
+	        },
             login(){
             	if(!this.userName || !this.userPwd){
             	  this.errorTip = true;
