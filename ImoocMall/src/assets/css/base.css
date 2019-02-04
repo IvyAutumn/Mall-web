@@ -811,6 +811,11 @@ a:hover {
   padding: 0 10px;
 }
 
+.btn:hover{
+  background-color: #ffe5e6;
+  transition: all .3s ease-out;
+}
+
 .btn, .btn[href] {
   display: inline-block;
   text-align: center;
