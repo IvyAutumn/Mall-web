@@ -235,7 +235,7 @@
                   if(res.status == '0'){
                     this.modalConfirm = false;
                     var delCount = this.delItem.productNum;
-                    // this.$store.commit("updateCartCount",-delCount);
+                    this.$store.commit("updateCartCount",-delCount);
                     this.init();
                   }
               });
@@ -258,9 +258,13 @@
                   checked:item.checked
                 }).then((response)=>{
                     let res = response.data;
-                    if(res.status=="0"){
-                      this.$store.commit("updateCartCount",flag=="add"?1:-1);
+                    let num = 0;
+                    if(flag=='add'){
+                      num = 1;
+                    }else if(flag=='minu'){
+                      num = -1;
                     }
+                    this.$store.commit("updateCartCount",num);
                 })
             },
             toggleCheckAll(){
